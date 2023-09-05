@@ -55,7 +55,7 @@ for page in range(1, pages):
 
         # add name to list
         gname.append(" ".join(tag.string.split()))
-        print(f"{rec_count + 1} Fetch data for game {gname[-1]}")
+        # print(f"{rec_count + 1} Fetch data for game {gname[-1]}")
 
         # get different attributes
         # traverse up the DOM tree

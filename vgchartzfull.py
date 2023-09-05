@@ -1,9 +1,10 @@
 from bs4 import BeautifulSoup, element
-import urllib
+import urllib.request
 import pandas as pd
 import numpy as np
+from tqdm import tqdm
 
-pages = 19
+pages = 65
 rec_count = 0
 rank = []
 gname = []
@@ -30,19 +31,27 @@ urltail += '&showlastupdate=0&showothersales=1&showgenre=1&sort=GL'
 for page in range(1, pages):
     surl = urlhead + str(page) + urltail
     r = urllib.request.urlopen(surl).read()
-    soup = BeautifulSoup(r)
+    soup = BeautifulSoup(r, 'html.parser')
     print(f"Page: {page}")
 
+    # for _ in soup:
+    #     print(_, type(_))
+    #     exit()
+    # exit()
     # vgchartz website is really weird so we have to search for
     # <a> tags with game urls
     game_tags = list(filter(
-        lambda x: x.attrs['href'].startswith('http://www.vgchartz.com/game/'),
+        lambda x: 'href' in x.attrs and x.attrs['href'].startswith('https://www.vgchartz.com/game/'),
         # discard the first 10 elements because those
         # links are in the navigation bar
         soup.find_all("a")
-    ))[10:]
-
-    for tag in game_tags:
+    ))#[10:]
+    # game_tags = [tag['href'] for tag in soup.find_all("a") if 'href' in tag.attrs and tag['href'].startswith('https://www.vgchartz.com/game/')]
+    # for i, _ in enumerate(game_tags[:15]):
+    #     print(i, _)
+    # print(len(game_tags))
+    # exit()
+    for tag in tqdm(game_tags):
 
         # add name to list
         gname.append(" ".join(tag.string.split()))
